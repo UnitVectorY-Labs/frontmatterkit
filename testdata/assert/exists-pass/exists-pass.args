@@ -1,0 +1,4 @@
+--assert
+.title exists
+--in
+exists-pass.md

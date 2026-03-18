@@ -24,7 +24,7 @@ A test case must exist for each example in this file.
 ### Validate a file
 
 ```bash
-frontmatterkit validate post.md
+frontmatterkit validate --in post.md
 ```
 
 ### Validate from stdin
@@ -33,42 +33,60 @@ frontmatterkit validate post.md
 cat post.md | frontmatterkit validate
 ```
 
+### Show validate help
+
+```bash
+frontmatterkit validate help
+```
+
 ## Get
 
 ### Get all front matter as YAML
 
 ```bash
-frontmatterkit get post.md
+frontmatterkit get --in post.md
 ```
 
 ### Get a specific field
 
 ```bash
-frontmatterkit get --path .title post.md
+frontmatterkit get --path .title --in post.md
 ```
 
 ### Get a nested value
 
 ```bash
-frontmatterkit get --path .author.name post.md
+frontmatterkit get --path .author.name --in post.md
 ```
 
 ### Get an array element
 
 ```bash
-frontmatterkit get --path '.tags[0]' post.md
+frontmatterkit get --path '.tags[0]' --in post.md
 ```
 
 ### Get all front matter as JSON
 
 ```bash
-frontmatterkit get --format json post.md
+frontmatterkit get --format json --in post.md
 ```
 
 ### Get a field as JSON
 
 ```bash
-frontmatterkit get --format json --path .tags post.md
+frontmatterkit get --format json --path .tags --in post.md
+```
+
+### Write extracted output to a file
+
+```bash
+frontmatterkit get --path .title --in post.md --out title.txt
+```
+
+### Show get help
+
+```bash
+frontmatterkit get help
 ```
 
 ## Set
@@ -76,25 +94,37 @@ frontmatterkit get --format json --path .tags post.md
 ### Set a value
 
 ```bash
-frontmatterkit set --set '.title=New Title' post.md
+frontmatterkit set --set '.title=New Title' --in post.md
 ```
 
 ### Set multiple values
 
 ```bash
-frontmatterkit set --set '.title=New Title' --set '.draft=true' post.md
+frontmatterkit set --set '.title=New Title' --set '.draft=true' --in post.md
 ```
 
 ### Set and write in place
 
 ```bash
-frontmatterkit set --set '.title=New Title' --in-place post.md
+frontmatterkit set --set '.title=New Title' --in post.md --in-place
 ```
 
 ### Set on a file without front matter
 
 ```bash
-frontmatterkit set --set '.title=Hello' plain.md
+frontmatterkit set --set '.title=Hello' --in plain.md
+```
+
+### Set and write to a separate file
+
+```bash
+frontmatterkit set --set '.title=Hello' --in post.md --out updated.md
+```
+
+### Show set help
+
+```bash
+frontmatterkit set help
 ```
 
 ## Unset
@@ -102,13 +132,25 @@ frontmatterkit set --set '.title=Hello' plain.md
 ### Remove a field
 
 ```bash
-frontmatterkit unset --path .draft post.md
+frontmatterkit unset --path .draft --in post.md
 ```
 
 ### Remove a nested field
 
 ```bash
-frontmatterkit unset --path .author.name post.md
+frontmatterkit unset --path .author.name --in post.md
+```
+
+### Remove a field in place
+
+```bash
+frontmatterkit unset --path .draft --in post.md --in-place
+```
+
+### Show unset help
+
+```bash
+frontmatterkit unset help
 ```
 
 ## Assert
@@ -116,37 +158,43 @@ frontmatterkit unset --path .author.name post.md
 ### Check that a field exists
 
 ```bash
-frontmatterkit assert --assert '.title exists' post.md
+frontmatterkit assert --assert '.title exists' --in post.md
 ```
 
 ### Check a value
 
 ```bash
-frontmatterkit assert --assert '.draft == false' post.md
+frontmatterkit assert --assert '.draft == false' --in post.md
 ```
 
 ### Numeric comparison
 
 ```bash
-frontmatterkit assert --assert '.count >= 1' post.md
+frontmatterkit assert --assert '.count >= 1' --in post.md
 ```
 
 ### Array contains
 
 ```bash
-frontmatterkit assert --assert '.tags contains "go"' post.md
+frontmatterkit assert --assert '.tags contains "go"' --in post.md
 ```
 
 ### Multiple assertions
 
 ```bash
-frontmatterkit assert --assert '.title exists' --assert '.draft == false' post.md
+frontmatterkit assert --assert '.title exists' --assert '.draft == false' --in post.md
 ```
 
 ### Check that a field does not exist
 
 ```bash
-frontmatterkit assert --assert '.obsolete not exists' post.md
+frontmatterkit assert --assert '.obsolete not exists' --in post.md
+```
+
+### Show assert help
+
+```bash
+frontmatterkit assert help
 ```
 
 ## Pipelines
@@ -154,17 +202,17 @@ frontmatterkit assert --assert '.obsolete not exists' post.md
 ### Validate before committing
 
 ```bash
-frontmatterkit validate post.md && git add post.md
+frontmatterkit validate --in post.md && git add post.md
 ```
 
 ### Extract a title for use in scripts
 
 ```bash
-TITLE=$(frontmatterkit get --path .title post.md)
+TITLE=$(frontmatterkit get --path .title --in post.md)
 ```
 
 ### Check conditions in CI
 
 ```bash
-frontmatterkit assert --assert '.draft == false' --assert '.title exists' post.md
+frontmatterkit assert --assert '.draft == false' --assert '.title exists' --in post.md
 ```

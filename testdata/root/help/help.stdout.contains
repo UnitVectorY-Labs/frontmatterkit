@@ -1,0 +1,8 @@
+frontmatterkit validates, queries, asserts, and updates YAML front matter in Markdown files.
+Use "frontmatterkit help <command>" or "frontmatterkit <command> help" for command-specific usage.
+Available Commands:
+validate
+get
+set
+unset
+assert

@@ -1,0 +1,6 @@
+--path
+.draft
+--in
+out-file.md
+--out
+out-file.out.md

@@ -1,0 +1,3 @@
+frontmatterkit validate
+--in
+frontmatterkit validate help

@@ -20,10 +20,23 @@ permalink: /usage
 
 ### Input
 
-Every subcommand accepts an optional file argument. If no file is provided, input is read from stdin. This makes frontmatterkit composable with other Unix tools via pipes.
+Every command that reads a Markdown document accepts `--in <file>`. If `--in` is omitted, input is read from stdin. This keeps frontmatterkit composable with other Unix tools via pipes.
 
 ```
-frontmatterkit <subcommand> [flags] [file]
+frontmatterkit <subcommand> [flags]
+```
+
+### Output
+
+Commands that emit data or rewritten documents write to stdout by default. Use `--out <file>` to write to a file instead. For `set` and `unset`, `--in-place` overwrites the file referenced by `--in`.
+
+### Help
+
+Every command supports both forms below:
+
+```bash
+frontmatterkit help <subcommand>
+frontmatterkit <subcommand> help
 ```
 
 ### Exit Codes
@@ -46,16 +59,18 @@ Check that the YAML front matter in a Markdown file is well-formed.
 ### Syntax
 
 ```
-frontmatterkit validate [file]
+frontmatterkit validate [--in <file>]
 ```
 
 ### Flags
 
-This subcommand has no additional flags.
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--in` | stdin | Read the Markdown document from a file instead of stdin. |
 
 ### Behavior
 
-- Reads from stdin if no file argument is provided.
+- Reads from stdin when `--in` is omitted.
 - A file with no front matter is considered **valid**.
 - If the file begins with `---` and the YAML content between the delimiters is malformed, validation **fails** with exit code `1`.
 
@@ -68,7 +83,7 @@ Extract front matter values from a Markdown file.
 ### Syntax
 
 ```
-frontmatterkit get [--format yaml|json] [--path <path>] [file]
+frontmatterkit get [--format yaml|json] [--path <path>] [--in <file>] [--out <file>]
 ```
 
 ### Flags
@@ -77,6 +92,8 @@ frontmatterkit get [--format yaml|json] [--path <path>] [file]
 |------|---------|-------------|
 | `--format` | `yaml` | Output format: `yaml` or `json`. |
 | `--path` | `.` | jq-like path to the value to extract. Use `.` for the full front matter object. |
+| `--in` | stdin | Read the Markdown document from a file instead of stdin. |
+| `--out` | stdout | Write the extracted value to a file instead of stdout. |
 
 ### Behavior
 
@@ -92,7 +109,7 @@ Add or update front matter fields in a Markdown file.
 ### Syntax
 
 ```
-frontmatterkit set [--set .path=value]... [--from <file>] [--mode overwrite|patch] [--in-place] [--output <path>] [file]
+frontmatterkit set [--set .path=value]... [--from <file>] [--mode overwrite|patch] [--in <file>] [--out <file> | --in-place]
 ```
 
 ### Flags
@@ -102,14 +119,16 @@ frontmatterkit set [--set .path=value]... [--from <file>] [--mode overwrite|patc
 | `--set` | | Set a value using `.path=yamlValue` format. Can be specified multiple times. |
 | `--from` | | Read YAML values from a file. Use `-` for stdin. |
 | `--mode` | `overwrite` | Merge strategy: `overwrite` replaces the entire front matter, `patch` merges values into the existing front matter. |
-| `--in-place` | `false` | Overwrite the source file with the result. |
-| `--output` | | Write the result to the specified file path instead of stdout. |
+| `--in` | stdin | Read the Markdown document from a file instead of stdin. |
+| `--out` | stdout | Write the updated document to the specified file instead of stdout. |
+| `--in-place` | `false` | Overwrite the file referenced by `--in`. Cannot be combined with `--out`. |
 
 ### Behavior
 
 - If the file has no front matter, a new front matter block is created.
 - Values provided via `--set` are interpreted as YAML, so `true`, `1`, and `[a, b]` produce their respective YAML types rather than plain strings.
 - The document body outside of the front matter is preserved unchanged.
+- `--from -` cannot be combined with document input from stdin because both would consume the same stream.
 
 ---
 
@@ -120,7 +139,7 @@ Remove a field from the front matter of a Markdown file.
 ### Syntax
 
 ```
-frontmatterkit unset --path <path> [--in-place] [--output <path>] [file]
+frontmatterkit unset --path <path> [--in <file>] [--out <file> | --in-place]
 ```
 
 ### Flags
@@ -128,8 +147,9 @@ frontmatterkit unset --path <path> [--in-place] [--output <path>] [file]
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--path` | | Path to the field to remove. **Required.** |
-| `--in-place` | `false` | Overwrite the source file with the result. |
-| `--output` | | Write the result to the specified file path instead of stdout. |
+| `--in` | stdin | Read the Markdown document from a file instead of stdin. |
+| `--out` | stdout | Write the updated document to the specified file instead of stdout. |
+| `--in-place` | `false` | Overwrite the file referenced by `--in`. Cannot be combined with `--out`. |
 
 ### Behavior
 
@@ -145,7 +165,7 @@ Test conditions against front matter fields. Useful for CI checks and pre-commit
 ### Syntax
 
 ```
-frontmatterkit assert --assert '<expr>'... [file]
+frontmatterkit assert --assert '<expr>'... [--in <file>]
 ```
 
 ### Flags
@@ -153,6 +173,7 @@ frontmatterkit assert --assert '<expr>'... [file]
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--assert` | | Assertion expression to evaluate. Can be specified multiple times. **Required.** |
+| `--in` | stdin | Read the Markdown document from a file instead of stdin. |
 
 ### Operators
 
@@ -172,6 +193,18 @@ frontmatterkit assert --assert '<expr>'... [file]
 ### Behavior
 
 - When multiple `--assert` flags are provided, all assertions must pass (logical AND). If any assertion fails, the command exits with code `1`.
+
+---
+
+## Command Help
+
+Use the built-in help for any command to see the exact flags and examples for that command:
+
+```bash
+frontmatterkit get help
+frontmatterkit set help
+frontmatterkit unset help
+```
 
 ---
 

@@ -1,0 +1,6 @@
+--set
+.title=foo
+--mode
+merge
+--in
+invalid-mode.md

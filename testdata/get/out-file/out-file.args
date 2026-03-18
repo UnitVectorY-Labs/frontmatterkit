@@ -1,0 +1,6 @@
+--path
+.title
+--in
+out-file.md
+--out
+out-file.out.txt

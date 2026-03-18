@@ -1,0 +1,7 @@
+--path
+.draft
+--in
+in-place-out-conflict.md
+--in-place
+--out
+in-place-out-conflict.out.md

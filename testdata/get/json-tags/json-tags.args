@@ -1,0 +1,6 @@
+--format
+json
+--path
+.tags
+--in
+json-tags.md

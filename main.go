@@ -3,7 +3,7 @@ package main
 import (
 	"runtime/debug"
 
-	"github.com/UnitVectorY-Labs/frontmatterkit/cmd"
+	"github.com/UnitVectorY-Labs/frontmatterkit/internal/cli"
 )
 
 var Version = "dev" // This will be set by the build systems to the release version
@@ -18,5 +18,5 @@ func main() {
 		}
 	}
 
-	cmd.Execute(Version)
+	cli.Execute(Version)
 }

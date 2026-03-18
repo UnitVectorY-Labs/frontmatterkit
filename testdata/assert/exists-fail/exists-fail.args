@@ -1,0 +1,4 @@
+--assert
+.missing exists
+--in
+exists-fail.md

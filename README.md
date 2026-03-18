@@ -2,10 +2,6 @@
 
 A Unix-style CLI for validating, querying, asserting, and minimally updating front matter in Markdown files.
 
-[![Build](https://github.com/UnitVectorY-Labs/frontmatterkit/actions/workflows/build-go.yml/badge.svg)](https://github.com/UnitVectorY-Labs/frontmatterkit/actions/workflows/build-go.yml)
-[![License: MIT](https://img.shields.io/github/license/UnitVectorY-Labs/frontmatterkit)](https://github.com/UnitVectorY-Labs/frontmatterkit/blob/main/LICENSE)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/UnitVectorY-Labs/frontmatterkit)](https://go.dev/)
-
 ## Features
 
 - **Validate** YAML front matter for correctness
@@ -13,7 +9,7 @@ A Unix-style CLI for validating, querying, asserting, and minimally updating fro
 - **Set** front matter fields with minimal document changes
 - **Unset** front matter fields cleanly
 - **Assert** conditions on front matter for CI/CD checks
-- Reads from files or stdin — fits naturally into Unix pipelines
+- Reads from `--in` or stdin and writes to `--out` or stdout
 - Strict YAML validation with helpful exit codes
 
 ## Installation
@@ -26,24 +22,23 @@ go install github.com/UnitVectorY-Labs/frontmatterkit@latest
 
 ```bash
 # Validate front matter
-frontmatterkit validate post.md
+frontmatterkit validate --in post.md
 
 # Get a field value
-frontmatterkit get --path .title post.md
+frontmatterkit get --path .title --in post.md
 
 # Set a field
-frontmatterkit set --set '.title=New Title' --in-place post.md
+frontmatterkit set --set '.title=New Title' --in post.md --in-place
 
 # Remove a field
-frontmatterkit unset --path .draft --in-place post.md
+frontmatterkit unset --path .draft --in post.md --in-place
 
 # Assert conditions in CI
-frontmatterkit assert --assert '.draft == false' --assert '.title exists' post.md
+frontmatterkit assert --assert '.draft == false' --assert '.title exists' --in post.md
+
+# Show command-specific help
+frontmatterkit get help
 ```
-
-## Documentation
-
-Full documentation is available at [unitvectory-labs.github.io/frontmatterkit](https://unitvectory-labs.github.io/frontmatterkit/).
 
 ## License
 

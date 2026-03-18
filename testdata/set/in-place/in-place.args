@@ -1,0 +1,5 @@
+--set
+.title=New Title
+--in
+in-place.md
+--in-place

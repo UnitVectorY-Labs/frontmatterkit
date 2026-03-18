@@ -1,0 +1,4 @@
+--set
+.title=New Title
+--in
+set-title.md
