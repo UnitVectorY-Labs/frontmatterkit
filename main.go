@@ -2,6 +2,8 @@ package main
 
 import (
 	"runtime/debug"
+
+	"github.com/UnitVectorY-Labs/frontmatterkit/cmd"
 )
 
 var Version = "dev" // This will be set by the build systems to the release version
@@ -16,5 +18,5 @@ func main() {
 		}
 	}
 
-	// TODO: Implement everything
+	cmd.Execute(Version)
 }
