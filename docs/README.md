@@ -48,8 +48,3 @@ frontmatterkit assert --assert '.draft == false' --assert '.title exists' --in p
 # Show command-specific help
 frontmatterkit set help
 ```
-
-## Documentation
-
-- [Usage Reference]({% link USAGE.md %}) — Complete CLI reference with all subcommands and flags.
-- [Examples]({% link EXAMPLES.md %}) — Practical examples for common workflows.
