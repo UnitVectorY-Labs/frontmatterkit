@@ -1,13 +1,12 @@
 
-# List all available commands
+# Commands for frontmatterkit
 default:
   @just --list
-
-# Build the Go application
+# Build frontmatterkit with Go
 build:
   go build ./...
 
-# Run the Go tests
+# Run tests for frontmatterkit with Go
 test:
   go clean -testcache
   go test ./...
