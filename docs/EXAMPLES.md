@@ -16,203 +16,192 @@ permalink: /examples
 
 ---
 
+These examples are intentionally few and complete. Each one is backed by a data-driven CLI case under `testdata/`, and each one shows the Markdown input, the generated output, or both.
 {: .note }
-A test case must exist for each example in this file.
+
+For the full flag reference, see the [Usage](/usage) page.
+{: .note }
 
 ## Validate
 
-### Validate a file
+### Reject malformed front matter
+
+Backed by `testdata/validate/invalid-yaml`. Use this example when you want to see what a real validation failure looks like.
+{: .warning }
 
 ```bash
-frontmatterkit validate --in post.md
+frontmatterkit validate --in invalid-yaml.md
 ```
 
-### Validate from stdin
+**Input Markdown**
 
-```bash
-cat post.md | frontmatterkit validate
+```markdown
+---
+title: [broken
+---
+Body content.
 ```
 
-### Show validate help
+**Error Output**
 
-```bash
-frontmatterkit validate help
+```text
+Error: validation failed: invalid YAML in front matter: yaml: line 1: did not find expected ',' or ']'
 ```
+
+This command exits with code `1`.
 
 ## Get
 
-### Get all front matter as YAML
+### Extract an array as JSON for another tool
+
+Backed by `testdata/get/json-tags`. This is a good example of using `get` as a structured data extractor instead of just printing YAML back out.
+{: .important }
 
 ```bash
-frontmatterkit get --in post.md
+frontmatterkit get --format json --path .tags --in json-tags.md
 ```
 
-### Get a specific field
+**Input Markdown**
 
-```bash
-frontmatterkit get --path .title --in post.md
+```markdown
+---
+title: Hello World
+draft: false
+count: 42
+tags:
+  - go
+  - yaml
+author:
+  name: Test User
+---
+This is the body content.
 ```
 
-### Get a nested value
+**Output**
 
-```bash
-frontmatterkit get --path .author.name --in post.md
-```
-
-### Get an array element
-
-```bash
-frontmatterkit get --path '.tags[0]' --in post.md
-```
-
-### Get all front matter as JSON
-
-```bash
-frontmatterkit get --format json --in post.md
-```
-
-### Get a field as JSON
-
-```bash
-frontmatterkit get --format json --path .tags --in post.md
-```
-
-### Write extracted output to a file
-
-```bash
-frontmatterkit get --path .title --in post.md --out title.txt
-```
-
-### Show get help
-
-```bash
-frontmatterkit get help
+```json
+[
+  "go",
+  "yaml"
+]
 ```
 
 ## Set
 
-### Set a value
+### Update front matter from stdin and emit the rewritten document
+
+Backed by `testdata/set/stdin-set`. This shows the Unix-friendly stdin workflow while still giving a complete before-and-after example.
+{: .note }
 
 ```bash
-frontmatterkit set --set '.title=New Title' --in post.md
+cat stdin-set.md | frontmatterkit set --set '.title=Stdin Title'
 ```
 
-### Set multiple values
+**Input Markdown**
 
-```bash
-frontmatterkit set --set '.title=New Title' --set '.draft=true' --in post.md
+```markdown
+---
+title: Hello World
+draft: false
+count: 42
+tags:
+  - go
+  - yaml
+author:
+  name: Test User
+---
+This is the body content.
 ```
 
-### Set and write in place
+**Output Markdown**
 
-```bash
-frontmatterkit set --set '.title=New Title' --in post.md --in-place
-```
-
-### Set on a file without front matter
-
-```bash
-frontmatterkit set --set '.title=Hello' --in plain.md
-```
-
-### Set and write to a separate file
-
-```bash
-frontmatterkit set --set '.title=Hello' --in post.md --out updated.md
-```
-
-### Show set help
-
-```bash
-frontmatterkit set help
+```markdown
+---
+title: Stdin Title
+draft: false
+count: 42
+tags:
+  - go
+  - yaml
+author:
+  name: Test User
+---
+This is the body content.
 ```
 
 ## Unset
 
-### Remove a field
+### Remove a publishing flag and write a clean output file
+
+Backed by `testdata/unset/out-file`. This is the useful `unset` workflow: remove one field, preserve everything else, and write the result to a separate file.
+{: .important }
 
 ```bash
-frontmatterkit unset --path .draft --in post.md
+frontmatterkit unset --path .draft --in out-file.md --out out-file.out.md
 ```
 
-### Remove a nested field
+**Input Markdown**
 
-```bash
-frontmatterkit unset --path .author.name --in post.md
+```markdown
+---
+title: Hello World
+draft: false
+count: 42
+tags:
+  - go
+  - yaml
+author:
+  name: Test User
+---
+This is the body content.
 ```
 
-### Remove a field in place
+**Output Markdown**
 
-```bash
-frontmatterkit unset --path .draft --in post.md --in-place
-```
-
-### Show unset help
-
-```bash
-frontmatterkit unset help
+```markdown
+---
+title: Hello World
+count: 42
+tags:
+  - go
+  - yaml
+author:
+  name: Test User
+---
+This is the body content.
 ```
 
 ## Assert
 
-### Check that a field exists
+### Fail fast when required front matter is missing
+
+Backed by `testdata/assert/exists-fail`. This is the most useful `assert` pattern for CI: enforce a required field and stop the pipeline with a clear failure.
+{: .warning }
 
 ```bash
-frontmatterkit assert --assert '.title exists' --in post.md
+frontmatterkit assert --assert '.missing exists' --in exists-fail.md
 ```
 
-### Check a value
+**Input Markdown**
 
-```bash
-frontmatterkit assert --assert '.draft == false' --in post.md
+```markdown
+---
+title: Hello World
+draft: false
+count: 42
+tags:
+  - go
+  - yaml
+author:
+  name: Test User
+---
+This is the body content.
 ```
 
-### Numeric comparison
+**Error Output**
 
-```bash
-frontmatterkit assert --assert '.count >= 1' --in post.md
+```text
+Error: assertion ".missing exists" failed: assertion failed: .missing does not exist
 ```
 
-### Array contains
-
-```bash
-frontmatterkit assert --assert '.tags contains "go"' --in post.md
-```
-
-### Multiple assertions
-
-```bash
-frontmatterkit assert --assert '.title exists' --assert '.draft == false' --in post.md
-```
-
-### Check that a field does not exist
-
-```bash
-frontmatterkit assert --assert '.obsolete not exists' --in post.md
-```
-
-### Show assert help
-
-```bash
-frontmatterkit assert help
-```
-
-## Pipelines
-
-### Validate before committing
-
-```bash
-frontmatterkit validate --in post.md && git add post.md
-```
-
-### Extract a title for use in scripts
-
-```bash
-TITLE=$(frontmatterkit get --path .title --in post.md)
-```
-
-### Check conditions in CI
-
-```bash
-frontmatterkit assert --assert '.draft == false' --assert '.title exists' --in post.md
-```
+This command exits with code `1`.
