@@ -1,4 +1,4 @@
-[![GitHub release](https://img.shields.io/github/release/UnitVectorY-Labs/frontmatterkit.svg)](https://github.com/UnitVectorY-Labs/frontmatterkit/releases/latest) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Work In Progress](https://img.shields.io/badge/Status-Work%20In%20Progress-yellow)](https://guide.unitvectorylabs.com/bestpractices/status/#work-in-progress) [![Go Report Card](https://goreportcard.com/badge/github.com/UnitVectorY-Labs/frontmatterkit)](https://goreportcard.com/report/github.com/UnitVectorY-Labs/frontmatterkit) 
+[![GitHub release](https://img.shields.io/github/release/UnitVectorY-Labs/frontmatterkit.svg)](https://github.com/UnitVectorY-Labs/frontmatterkit/releases/latest) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Active](https://img.shields.io/badge/Status-Active-green)](https://guide.unitvectorylabs.com/bestpractices/status/#active) [![Go Report Card](https://goreportcard.com/badge/github.com/UnitVectorY-Labs/frontmatterkit)](https://goreportcard.com/report/github.com/UnitVectorY-Labs/frontmatterkit) 
 
 # frontmatterkit
 

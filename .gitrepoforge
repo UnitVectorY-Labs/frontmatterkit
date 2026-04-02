@@ -3,6 +3,7 @@ default_branch: main
 config:
   description: "A Unix-style CLI for validating, querying, asserting, and minimally updating front matter in Markdown files."
   license: MIT
+  status: active
   language: go
   release: release-go
   justfile: true
