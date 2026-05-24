@@ -3,11 +3,15 @@ package cli
 import (
 	"fmt"
 	"os"
+	"regexp"
+	"runtime"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 var exitCode int
+var semverRe = regexp.MustCompile(`^\d+\.\d+\.\d+`)
 
 var rootCmd = &cobra.Command{
 	Use:   "frontmatterkit",
@@ -25,7 +29,7 @@ Use "frontmatterkit help <command>" or "frontmatterkit <command> help" for comma
 
 // Execute runs the root command and exits with the appropriate code.
 func Execute(version string) {
-	rootCmd.Version = version
+	rootCmd.Version = buildVersionOutput(version)
 	if err := rootCmd.Execute(); err != nil {
 		if exitCode == 0 {
 			exitCode = 2
@@ -52,4 +56,12 @@ func addHelpSubcommand(parent *cobra.Command) {
 			return parent.Help()
 		},
 	})
+}
+
+func buildVersionOutput(version string) string {
+	normalized := version
+	if semverRe.MatchString(normalized) && !strings.HasPrefix(normalized, "v") {
+		normalized = "v" + normalized
+	}
+	return fmt.Sprintf("%s (%s, %s/%s)", normalized, runtime.Version(), runtime.GOOS, runtime.GOARCH)
 }
