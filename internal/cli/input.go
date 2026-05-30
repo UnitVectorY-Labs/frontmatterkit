@@ -86,7 +86,7 @@ func renderJSON(node *yaml.Node) (string, error) {
 	if node == nil {
 		return "null\n", nil
 	}
-	var val interface{}
+	var val any
 	if err := node.Decode(&val); err != nil {
 		return "", err
 	}

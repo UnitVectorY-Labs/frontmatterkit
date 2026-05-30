@@ -43,12 +43,12 @@ func (d *Document) Get(path pathsyntax.Path) *yaml.Node {
 
 // GetValue retrieves the Go value at the given path.
 // Returns nil if path not found.
-func (d *Document) GetValue(path pathsyntax.Path) interface{} {
+func (d *Document) GetValue(path pathsyntax.Path) any {
 	node := d.Get(path)
 	if node == nil {
 		return nil
 	}
-	var val interface{}
+	var val any
 	if err := node.Decode(&val); err != nil {
 		return nil
 	}
