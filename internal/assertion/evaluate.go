@@ -60,13 +60,13 @@ func (a *Assertion) Evaluate(doc *frontmatter.Document) error {
 // evalEquals handles == and != operators.
 func evalEquals(a *Assertion, node *yaml.Node, negate bool) error {
 	// Decode the expected value via YAML
-	var expected interface{}
+	var expected any
 	if err := yaml.Unmarshal([]byte(a.Value), &expected); err != nil {
 		return fmt.Errorf("assertion failed: cannot parse expected value %q as YAML: %w", a.Value, err)
 	}
 
 	// Decode the actual value
-	var actual interface{}
+	var actual any
 	if node != nil {
 		if err := node.Decode(&actual); err != nil {
 			return fmt.Errorf("assertion failed: cannot decode node value: %w", err)
@@ -89,7 +89,7 @@ func evalEquals(a *Assertion, node *yaml.Node, negate bool) error {
 }
 
 // valuesEqual compares two decoded YAML values.
-func valuesEqual(a, b interface{}) bool {
+func valuesEqual(a, b any) bool {
 	// Normalize numeric types for comparison: both int and float should compare equal
 	af, aIsNum := toFloat64(a)
 	bf, bIsNum := toFloat64(b)
@@ -113,13 +113,13 @@ func evalContains(a *Assertion, node *yaml.Node, negate bool) error {
 	switch node.Kind {
 	case yaml.SequenceNode:
 		// Parse the expected value from YAML
-		var expected interface{}
+		var expected any
 		if err := yaml.Unmarshal([]byte(a.Value), &expected); err != nil {
 			return fmt.Errorf("assertion failed: cannot parse expected value %q as YAML: %w", a.Value, err)
 		}
 
 		for _, elem := range node.Content {
-			var elemVal interface{}
+			var elemVal any
 			if err := elem.Decode(&elemVal); err != nil {
 				continue
 			}
@@ -132,7 +132,7 @@ func evalContains(a *Assertion, node *yaml.Node, negate bool) error {
 	case yaml.ScalarNode:
 		// For scalar strings, check substring containment
 		// Parse the expected value to get a string
-		var expected interface{}
+		var expected any
 		if err := yaml.Unmarshal([]byte(a.Value), &expected); err != nil {
 			return fmt.Errorf("assertion failed: cannot parse expected value %q as YAML: %w", a.Value, err)
 		}
@@ -179,7 +179,7 @@ func evalNumeric(a *Assertion, node *yaml.Node, cmp func(actual, expected float6
 }
 
 // toFloat64 tries to convert a value to float64.
-func toFloat64(v interface{}) (float64, bool) {
+func toFloat64(v any) (float64, bool) {
 	switch n := v.(type) {
 	case int:
 		return float64(n), true

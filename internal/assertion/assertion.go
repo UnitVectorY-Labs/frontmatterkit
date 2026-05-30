@@ -148,8 +148,8 @@ func parseOperatorAndValue(rest, fullExpr string) (OpType, string, error) {
 
 	// Extract first word for error message
 	firstWord := rest
-	if idx := strings.IndexByte(rest, ' '); idx != -1 {
-		firstWord = rest[:idx]
+	if before, _, ok := strings.Cut(rest, " "); ok {
+		firstWord = before
 	}
 	return 0, "", fmt.Errorf("unknown operator %q in assertion %q", firstWord, fullExpr)
 }

@@ -61,7 +61,6 @@ func TestCLICases(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		testName := tc.name
 		if tc.command != rootCommandDir {
 			testName = tc.command + "/" + tc.name
@@ -241,12 +240,7 @@ func loadStdin(t *testing.T, basePath string, args []string) string {
 }
 
 func argsReferenceFile(args []string, fileName string) bool {
-	for _, arg := range args {
-		if arg == fileName {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(args, fileName)
 }
 
 func assertStream(t *testing.T, basePath, streamName, got string) {
