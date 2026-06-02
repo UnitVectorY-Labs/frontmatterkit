@@ -1,0 +1,4 @@
+--in
+schema-invalid-json.md
+--schema
+schema.json

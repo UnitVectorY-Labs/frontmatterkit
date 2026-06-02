@@ -1,0 +1,4 @@
+--in
+schema-missing-file.md
+--schema
+missing.schema.json
