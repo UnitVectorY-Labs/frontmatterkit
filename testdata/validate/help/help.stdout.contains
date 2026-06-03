@@ -1,3 +1,4 @@
 frontmatterkit validate
 --in
+--schema
 frontmatterkit validate help

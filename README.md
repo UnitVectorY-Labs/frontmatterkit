@@ -26,6 +26,9 @@ go install github.com/UnitVectorY-Labs/frontmatterkit@latest
 # Validate front matter
 frontmatterkit validate --in post.md
 
+# Validate front matter against a JSON Schema
+frontmatterkit validate --in post.md --schema frontmatter.schema.json
+
 # Get a field value
 frontmatterkit get --path .title --in post.md
 

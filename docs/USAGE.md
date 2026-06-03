@@ -47,19 +47,19 @@ frontmatterkit uses structured exit codes so scripts and CI pipelines can react 
 |------|---------|
 | `0`  | Success |
 | `1`  | Validation or assertion failure |
-| `2`  | Usage or syntax error |
+| `2`  | Usage, syntax, or schema-definition error |
 | `3`  | I/O error |
 
 ---
 
 ## validate
 
-Check that the YAML front matter in a Markdown file is well-formed.
+Check that the YAML front matter in a Markdown file is well-formed. Optionally validate the front matter against a JSON Schema.
 
 ### Syntax
 
 ```
-frontmatterkit validate [--in <file>]
+frontmatterkit validate [--in <file>] [--schema <file>]
 ```
 
 ### Flags
@@ -67,12 +67,15 @@ frontmatterkit validate [--in <file>]
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--in` | stdin | Read the Markdown document from a file instead of stdin. |
+| `--schema` | none | Validate the front matter against a JSON Schema file. |
 
 ### Behavior
 
 - Reads from stdin when `--in` is omitted.
 - A file with no front matter is considered **valid**.
 - If the file begins with `---` and the YAML content between the delimiters is malformed, validation **fails** with exit code `1`.
+- When `--schema` is provided, the parsed front matter is validated against that JSON Schema. Schema validation failures exit with code `1`.
+- Invalid JSON Schema files exit with code `2`. Missing or unreadable schema files exit with code `3`.
 
 ---
 
