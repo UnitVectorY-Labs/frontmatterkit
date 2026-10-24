@@ -11,3 +11,4 @@ config:
   docs:
     enabled: true
     domain: frontmatterkit.unitvectorylabs.com
+  osv: sarif
