@@ -56,3 +56,20 @@ jobs:
           "${{ steps.go_release.outputs.release_asset_dir }}/*"
           "${{ github.event.repository.name }}-${{ github.ref_name }}-*.tar.gz"
           "${{ github.event.repository.name }}-${{ github.ref_name }}-*.zip"
+
+  notify-release-ready:
+    needs: releases-matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      # Release runs use tag refs. Emit a main-branch completion only after
+      # every release-matrix job has successfully uploaded its assets.
+      - name: Dispatch release-ready notification on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh api --method POST
+          "repos/${GITHUB_REPOSITORY}/actions/workflows/notify-release-ready.yml/dispatches"
+          -f ref=main

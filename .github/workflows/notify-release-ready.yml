@@ -1,43 +1,14 @@
 name: Notify Release Ready
 
 on:
-  workflow_run:
-    workflows: ["Build and Release Go App"]
-    types: [completed]
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
-  notify:
-    if: >-
-      github.event_name == 'workflow_run' &&
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'release' &&
-      github.event.workflow_run.path == '.github/workflows/release-go-github.yml' &&
-      github.event.workflow_run.head_repository.full_name == github.repository
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      actions: write
-    steps:
-      # Release runs use tag refs. Emit a main-branch completion that the
-      # cross-repository router can match after every release asset is uploaded.
-      # GITHUB_TOKEN permits workflow_dispatch to create another workflow run.
-      - name: Dispatch release-ready notification on main
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh api --method POST
-          "repos/${GITHUB_REPOSITORY}/actions/workflows/notify-release-ready.yml/dispatches"
-          -f ref=main
-
   ready:
-    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    permissions: {}
     steps:
       - name: Signal release assets are ready
         run: echo 'Release-ready notification; downstream builds resolve the latest release.'
