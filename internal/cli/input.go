@@ -2,7 +2,8 @@ package cli
 
 import (
 	"bytes"
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"fmt"
 	"io"
 	"os"
@@ -90,11 +91,9 @@ func renderJSON(node *yaml.Node) (string, error) {
 	if err := node.Decode(&val); err != nil {
 		return "", err
 	}
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetIndent("", "  ")
-	if err := enc.Encode(val); err != nil {
+	data, err := json.Marshal(val, jsontext.WithIndent("  "), json.Deterministic(true))
+	if err != nil {
 		return "", err
 	}
-	return buf.String(), nil
+	return string(data) + "\n", nil
 }
