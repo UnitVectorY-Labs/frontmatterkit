@@ -1,7 +1,7 @@
 package frontmatter
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"io"
@@ -19,16 +19,8 @@ var ErrInvalidJSONSchema = errors.New("invalid JSON schema")
 // ValidateJSONSchema validates the document's front matter against a JSON Schema.
 // Missing front matter is validated as an empty object.
 func ValidateJSONSchema(doc *Document, schemaReader io.Reader) error {
-	decoder := json.NewDecoder(schemaReader)
 	var schemaDoc any
-	if err := decoder.Decode(&schemaDoc); err != nil {
-		return fmt.Errorf("%w: %s", ErrInvalidJSONSchema, err)
-	}
-	var extra any
-	if err := decoder.Decode(&extra); err != io.EOF {
-		if err == nil {
-			err = fmt.Errorf("multiple JSON values")
-		}
+	if err := json.UnmarshalRead(schemaReader, &schemaDoc); err != nil {
 		return fmt.Errorf("%w: %s", ErrInvalidJSONSchema, err)
 	}
 
