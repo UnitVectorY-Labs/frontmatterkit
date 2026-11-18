@@ -151,3 +151,22 @@ func mustParseAndValidate(t *testing.T, content string) *Document {
 	}
 	return doc
 }
+
+func TestValidateJSONSchemaRejectsAmbiguousJSON(t *testing.T) {
+	for _, tc := range []struct{ name, input string }{
+		{"duplicate names", `{"type":"object","type":"array"}`},
+		{"nested duplicate names", `{"properties":{"x":{"type":"string","type":"number"}}}`},
+		{"invalid UTF-8", "{\"title\":\"\xff\"}"},
+		{"multiple values", `{} {}`},
+		{"trailing garbage", `{} x`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := ValidateJSONSchema(nil, strings.NewReader(tc.input)); !errors.Is(err, ErrInvalidJSONSchema) {
+				t.Fatalf("error = %v, want ErrInvalidJSONSchema", err)
+			}
+		})
+	}
+	if err := ValidateJSONSchema(nil, strings.NewReader(" \n {} \t")); err != nil {
+		t.Fatalf("valid schema with whitespace: %v", err)
+	}
+}
