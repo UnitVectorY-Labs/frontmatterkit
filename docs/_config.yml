@@ -1,9 +1,13 @@
 title: frontmatterkit
 description: "A Unix-style CLI for validating, querying, asserting, and minimally updating front matter in Markdown files."
 
-remote_theme: UnitVectorY-Labs/uvy-docs-theme@v0.2.0
+remote_theme: UnitVectorY-Labs/uvy-docs-theme@v0.4.0
 plugins:
   - jekyll-remote-theme
+
+uvy_docs:
+  license: "MIT License"
+  license_url: "https://github.com/UnitVectorY-Labs/frontmatterkit/blob/main/LICENSE"
 
 callouts:
   highlight:
