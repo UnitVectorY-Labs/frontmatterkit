@@ -76,6 +76,7 @@ frontmatterkit validate [--in <file>] [--schema <file>]
 - If the file begins with `---` and the YAML content between the delimiters is malformed, validation **fails** with exit code `1`.
 - When `--schema` is provided, the parsed front matter is validated against that JSON Schema. Schema validation failures exit with code `1`.
 - Invalid JSON Schema files exit with code `2`. Missing or unreadable schema files exit with code `3`.
+- JSON Schema files must contain one JSON value and valid UTF-8; duplicate object names are rejected.
 
 ---
 
@@ -102,6 +103,7 @@ frontmatterkit get [--format yaml|json] [--path <path>] [--in <file>] [--out <fi
 
 - Missing front matter is treated as an empty object (`{}`).
 - If the specified path does not exist, the output is `null`.
+- JSON output is indented and uses deterministic object key ordering. Characters such as `<`, `>`, and `&` are emitted without HTML escaping; invalid UTF-8 is rejected.
 
 ---
 
